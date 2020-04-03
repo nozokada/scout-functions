@@ -1,8 +1,18 @@
 const functions = require('firebase-functions');
+const admin = require('firebase-admin');
+admin.initializeApp();
 
-// Create and Deploy Your First Cloud Functions
-// https://firebase.google.com/docs/functions/write-firebase-functions
+const GeoFirestore = require('geofirestore').GeoFirestore;
 
-exports.helloWorld = functions.https.onRequest((request, response) => {
- response.send("Hello from Firebase!");
+exports.createGeoFirestoreLocation = functions.firestore
+    .document('photos/{photoId}')
+    .onWrite((change, context) => {
+        const geofirestore = new GeoFirestore(admin.firestore());
+        const geocollection = geofirestore.collection('locations');
+        const position = change.after.data()['location']['position'];
+        const latitude = position['latitude'];
+        const longitude = position['longitude'];
+        return geocollection.doc(context.params.photoId).set({
+            coordinates: new admin.firestore.GeoPoint(latitude, longitude)
+        });
 });
