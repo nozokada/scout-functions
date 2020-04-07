@@ -7,7 +7,14 @@ const GeoFirestore = require('geofirestore').GeoFirestore;
 const geoFirestore = new GeoFirestore(admin.firestore());
 const spotsGeoCollection = geoFirestore.collection('spots_geo');
 
+const photosRef = firestore.collection('photos');
 const spotsRef = firestore.collection('spots');
+
+exports.onTPPhotoCreate = functions.firestore
+    .document('tp_photos/{id}')
+    .onCreate((snapshot, context) => {
+        return photosRef.add(snapshot.data());
+    });
 
 exports.onPhotoCreate = functions.firestore
     .document('photos/{id}')
