@@ -41,7 +41,7 @@ exports.onSpotCreate = functions.firestore
         const latitude = position['latitude'];
         const longitude = position['longitude'];
 
-        return spotsGeoCollection.doc(context.params.id).set({
+        return spotsGeoCollection.doc(snapshot.id).set({
             coordinates: new admin.firestore.GeoPoint(latitude, longitude)
         });
     });
