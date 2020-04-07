@@ -26,7 +26,7 @@ exports.onPhotoCreate = functions.firestore
             .then(spotQuerySnapshot => {
                 if (spotQuerySnapshot.empty) {
                     console.log(`Creating new spot for photo ${photoSnapshot.id}`);
-                    return addSpot(photoSnapshot);
+                    return createSpot(photoSnapshot);
                 }
                 const spot = spotQuerySnapshot.docs[0];
                 console.log(`Adding photo ${photoSnapshot.id} to existing spot ${spot.id}`);
@@ -46,7 +46,7 @@ exports.onSpotCreate = functions.firestore
         });
     });
 
-function addSpot(photoSnapshot) {
+function createSpot(photoSnapshot) {
     const photoData = photoSnapshot.data();
     return spotsRef.add({
         position: photoData['location']['position'],
